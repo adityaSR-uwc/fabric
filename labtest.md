@@ -33,9 +33,6 @@ CSV format with columns: Timestamps, Lab test name, description/details and pati
    - Description: details or description of the lab tests else N/A 
    - Patient name: name of the patient taking the lab test
 
-## Exclusions
-1. Do not include any information related to medication history.
-2. Do not include any information related to family or personal history. (eg. Death of a family member, hopitalisations, suicide attempts etc)
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2023-06-06: Jane underwent a blood test for anxiety diagnosis.
