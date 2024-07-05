@@ -1,3 +1,5 @@
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
 # Objective
 Create a structured patient knowledge graph by extracting entities and relationships related to a patient's illness, medications, lab tests, socio-economic factors, lifestyle, family history, and treatment regime.
 
@@ -63,3 +65,18 @@ Jane Doe,"20-11-2020: started taking medication","Lisinopril"
 Jane Doe,"20-11-2020: started taking medication","Metformin"
 Jane Doe,"20-11-2020: started taking medication","Lorazepam"
 
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+On 2024-01-21, Jane visited the clinic with a high fever and was prescribed paracetamol tablet 100mg twice daily after food.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+2024-01-21, "paracetamol", 100mg, oral, "twice daily after food", "started"
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+Jane reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD) on June 6th 2023. She was prescribed clonazepam 250mg for two weeks once daily.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+2023-06-06, "clonazepam", 250mg, N/A, "once daily - two weeks", "started"
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+unknown, "Lisinopril", N/A, N/A, N/A, N/A
+unknown, "Metformin", N/A, N/A, N/A, N/A
+unknown, "Lorazepam", N/A, N/A, N/A, N/A
+<|eot_id|><|start_header_id|>user<|end_header_id|>"
