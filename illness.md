@@ -37,8 +37,8 @@ CSV format with columns: timestamp, patient name, disease name, description/deta
    - ICD-10 Code: ICD - 10 for the disease, illness or disorder
 
 ## Exclusion
-1. Do not include diseases or illnesses related to the patient's family.
-2. Do not include medication hsitory of the patient.
+1. Do not include any diseases or illnesses or disorders related to the patient's family.
+2. Do not include medication history of the patient. (eg. Past hopitalisations, medication regime change etc)
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2023-06-06: Jane reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD).
