@@ -21,7 +21,6 @@ CSV format with columns: timestamp, patient name, disease name, description/deta
 2. Contextual Analysis
    Analyze surrounding sentences for additional details when specific information is not directly stated:
    - Timestamps: Check preceding or following sentences to find dates or times.
-   - Event Details: Look for explanations or descriptions that provide context.
 
 3. Structured Data Formation
    Organize the extracted information into a structured format:
