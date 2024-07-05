@@ -1,82 +1,76 @@
-<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-
 # Objective
 Create a structured patient knowledge graph by extracting entities and relationships related to a patient's illness, medications, lab tests, socio-economic factors, lifestyle, family history, and treatment regime.
 
 # Output Format
-CSV format with columns: Object, Relationship (timestamp, what/when/how), Entity.
+CSV format with columns: Node Type 1, Node Type 2, Edge, Edge Attribute.
 
 # Methodology
-1. *Information Extraction*
+1. Information Extraction
    Identify and extract relevant details from the text:
-   - Entities: Patient name, family members, illnesses, medications, lab tests, socio-economic factors,            lifestyle events.
+   - Entities: Patient name, family members, illnesses, medications, lab tests, socio-economic factors, lifestyle events.
    - Relationships: The connection between entities (e.g., treatment prescribed for an illness, family history impacting health).
    - Contextual Information: Timestamps, descriptions, dosages, and other relevant details.
 
-2. *Contextual Analysis*
+2. Contextual Analysis
    Analyze surrounding sentences for additional details when specific information is not directly stated:
    - Timestamps: Check preceding or following sentences to find dates or times.
    - Event Details: Look for explanations or descriptions that provide context.
 
-3. *Structured Data Formation*
+3. Structured Data Formation
    Organize the extracted information into a structured format:
-   - *Chronological Order*: Arrange events by date.
-   - *Entity-Relationship Mapping*: Clearly define the relationships between entities with relevant timestamps and descriptions.
-   - *Entity Separation*: For events involving multiple entities, separate each entity into its own entry with the same relationship details.
-        - Example Input sentence: 
-        20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
-        - Example Output Entry: 
-        Jane Doe,"20-11-2020: started taking medication","Lisinopril"
-        Jane Doe,"20-11-2020: started taking medication","Metformin"
-        Jane Doe,"20-11-2020: started taking medication","Lorazepam"
+   - Chronological Order: Arrange events by date.
+   - Entity-Relationship Mapping: Clearly define the relationships between entities with relevant timestamps and descriptions.
+   - Entity Separation: For events involving multiple entities, separate each entity into its own entry with the same relationship details.
 
-
-4. *Formatting for CSV Output*
+4. Formatting for CSV Output
    Convert the structured data into CSV format with specified columns:
-   - Object: The primary subject (e.g., patient, family member).
-   - Relationship (timestamp, what/when/how): Detailed description of the relationship, including time and context.
-   - Entity: The related entity (e.g., illness, medication).
-  
+   - Node Type 1: The primary subject (e.g., User, Clinician).
+   - Node Type 2: The related entity (e.g., illness, medication).
+   - Edge: Relationship type between Node Type 1 and Node Type 2.
+   - Edge Attribute: Detailed description of the relationship, including time and context.
+
 # Implementation Steps
-- Text Parsing: Break down the input text into sentences.
-- Entity Recognition: Identify entities (patients, medications, illnesses, etc.).
-- Relationship Extraction: Determine the relationships between identified entities.
-- Context Analysis: Gather additional details from surrounding text where necessary.
-- Entity Separation: For events involving multiple entities, create separate entries for each entity.
-- Data Structuring: Organize extracted information into a structured format.
-- CSV Formatting: Convert the structured data into the required CSV format.
+1. Text Parsing: Break down the input text into sentences.
+2. Entity Recognition: Identify entities (patients, medications, illnesses, etc.).
+3. Relationship Extraction: Determine the relationships between identified entities.
+4. Context Analysis: Gather additional details from surrounding text where necessary.
+5. Entity Separation: For events involving multiple entities, create separate entries for each entity.
+6. Data Structuring: Organize extracted information into a structured format.
+7. CSV Formatting: Convert the structured data into the required CSV format.
 
-## Input Example
-
-2024-01-21: Jane visited the clinic with a high fever and was prescribed paracetamol 100mg.
-2023-06-06: Jane reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD). She was prescribed clonazepam 250mg.
-2022-09-20: Jane was diagnosed with bipolar disorder and started on quetiapine 500mg.
-2021-08-25: Jane mentioned during a consultation that her brother had died in a car accident when he was 18, which had a significant impact on her mental health.
+## Example Input sentence:
 20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
 
-## Example of CSV Output
+## Example Output Entry:
+User, Medicine, user → medicine, 20-11-2020, Allergic to, Dosage, Frequency, Route
+Jane Doe, Lisinopril, user → medicine, 20-11-2020, , Dosage, ,
+Jane Doe, Metformin, user → medicine, 20-11-2020, , , ,
+Jane Doe, Lorazepam, user → medicine, 20-11-2020, , , ,
 
-Object,Relationship (timestamp, what/when/how),Entity
-Jane,"2024-01-21: visited the clinic with a high fever and was prescribed","paracetamol 100mg"
-Jane,"2023-06-06: reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD); prescribed","clonazepam 250mg"
-Jane,"2022-09-20: was diagnosed with bipolar disorder; started on","quetiapine 500mg"
-Jane's brother,"2021-08-25: mentioned during a consultation; died in a car accident when he was 18","car accident"
-Jane Doe,"20-11-2020: started taking medication","Lisinopril"
-Jane Doe,"20-11-2020: started taking medication","Metformin"
-Jane Doe,"20-11-2020: started taking medication","Lorazepam"
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
-On 2024-01-21, Jane visited the clinic with a high fever and was prescribed paracetamol tablet 100mg twice daily after food.
+2024-01-21: Jane visited the clinic with a high fever and was prescribed paracetamol 100mg twice daily after food.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
-2024-01-21, "paracetamol", 100mg, oral, "twice daily after food", "started"
+User,Symptoms,user → symptom,"2024-01-21","high fever"
+User,Medicine,user → medicine,"2024-01-21, "paracetamol", "100mg", "twice daily after food", "oral"
 <|eot_id|><|start_header_id|>user<|end_header_id|>
-Jane reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD) on June 6th 2023. She was prescribed clonazepam 250mg for two weeks once daily.
+2023-06-06: Jane reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD). She was prescribed clonazepam 250mg for two weeks once daily.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
-2023-06-06, "clonazepam", 250mg, N/A, "once daily - two weeks", "started"
+User,Illness,user → illness,"2023-06-06","Generalised Anxiety Disorder (GAD)"
+User,Medicine,user → medicine,"2023-06-06, clonazepam, 250mg, once daily for two weeks"
 <|eot_id|><|start_header_id|>user<|end_header_id|>
-Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
+2022-09-20: Jane was diagnosed with bipolar disorder and started on quetiapine 500mg.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
-unknown, "Lisinopril", N/A, N/A, N/A, N/A
-unknown, "Metformin", N/A, N/A, N/A, N/A
-unknown, "Lorazepam", N/A, N/A, N/A, N/A
-<|eot_id|><|start_header_id|>user<|end_header_id|>"
+User,Medicine,user → medicine,"2022-09-20, quetiapine, 500mg"
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+2021-08-25: Jane mentioned during a consultation that her brother had died in a car accident when he was 18, which had a significant impact on her mental health.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User,Family,user → family,"2021-08-25, brother, significant impact on mental health, died in car accident at 18"
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User,Medicine,user → medicine,"20-11-2020", "Lisinopril"
+User,Medicine,user → medicine,"20-11-2020", "Metformin"
+User,Medicine,user → medicine,"20-11-2020", "Lorazepam"
+
+<|eot_id|><|start_header_id|>user<|end_header_id|>
