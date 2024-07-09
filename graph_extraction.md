@@ -12,7 +12,7 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
    - User: Patient name, friends/family members, clinician  
    - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinican/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, M B T I Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only) 
    - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc) 
-   - Edge Attributes: details of the connection between User and Node (e.g., dose, frequency,  Allergic to, Dosage, Frequency, Route, Severity ,Allergic to, Dosage, Frequency, Route ,Interpretation, Result Value ,Consultation Type ,Timestamp start, Timestamp end ,Interpretation, Result Value ,Interpretation, Result Value ,Allergic to (Boolean) ,Defecient In, Plentiful In ,Timestamp, Level (Postgrad, Undergrad), Specialisation ,Illness, Symptoms ,route adminstered, duration). 
+   - Edge Attributes: details of the connection between User and Node (e.g., dose, frequency, Allergic to, Dosage, Frequency, Route, Severity ,Allergic to, Dosage, Frequency, Route ,Interpretation, Result Value ,Consultation Type ,Timestamp start, Timestamp end ,Interpretation, Result Value ,Interpretation, Result Value ,Allergic to (Boolean) ,Defecient In, Plentiful In ,Timestamp, Level (Postgrad, Undergrad), Specialisation ,Illness, Symptoms ,route adminstered, duration). 
 
 2. Contextual Analysis
    Analyze surrounding sentences for additional details when specific information is not directly stated:
@@ -30,7 +30,7 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
    - User: Patient name, friends/family members, clinician (single key-value)
    - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinican/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, M B T I Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only) (single key-value)
    - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc) (single key-value)
-   - Edge Attributes: This is an array of key value pairs with details of the connection between User and Node (e.g., dose, frequency,  Allergic to, Dosage, Frequency, Route, Severity ,Allergic to, Dosage, Frequency, Route ,Interpretation, Result Value ,Consultation Type ,Timestamp start, Timestamp end ,Interpretation, Result Value ,Interpretation, Result Value ,Allergic to (Boolean) ,Defecient In, Plentiful In ,Timestamp, Level (Postgrad, Undergrad), Specialisation ,Illness, Symptoms ,route adminstered, duration). (single or multiple array key-value)
+   - Edge Attributes: This is an array of key value pairs with details of the connection between User and Node (e.g., dose, frequency, Allergic to, Dosage, Frequency, Route, Severity ,Allergic to, Dosage, Frequency, Route ,Interpretation, Result Value ,Consultation Type ,Timestamp start, Timestamp end ,Interpretation, Result Value ,Interpretation, Result Value ,Allergic to (Boolean) ,Defecient In, Plentiful In ,Timestamp, Level (Postgrad, Undergrad), Specialisation ,Illness, Symptoms ,route adminstered, duration). (single or multiple array key-value)
 
 # Implementation Steps
 1. Text Parsing: Break down the input text into sentences.
@@ -46,23 +46,23 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 { "data": [
       {
-      "user": "Jane doe",
-      "node_type": "Drugs",
+      "user": "Jane Doe",
+      "node_type": "Medicine",
       "node_name" : "Lisinopril",
       "edge_attributes": {
            "timestamp": "20-11-2020" 
       }
       },
       {
-      "user": "Jane doe",
-      "node_type": "Drugs",
+      "user": "Jane Doe",
+      "node_type": "Medicine",
       "node_name" : "Metformin",
       "edge_attributes": {
            "timestamp": "20-11-2020" 
       }},
       {
-      "user": "Jane doe",
-      "node_type": "Drugs",
+      "user": "Jane Doe",
+      "node_type": "Medicine",
       "node_name" : "Lorazepam",
       "edge_attributes": {
            "timestamp": "20-11-2020" 
@@ -89,9 +89,9 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
       "node_name": "paracetamol",
       "edge_attributes": {
         "timestamp": "2024-01-21",
-        "frequency": "twice daily after food",
-        "route": "oral",
-        "dose": "100mg"
+        "dose": "100mg",
+        "frequency": "twice daily",
+        "route": "oral"
       }
     }
   ]
@@ -115,9 +115,9 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
       "node_name": "clonazepam",
       "edge_attributes": {
         "timestamp": "2023-06-06",
+        "dose": "250mg",
         "frequency": "once daily for two weeks",
-        "route": "oral",
-        "dose": "250mg"
+        "route": "oral"
       }
     }
   ]
@@ -127,6 +127,14 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 {
   "data": [
+    {
+      "user": "Jane",
+      "node_type": "Illness",
+      "node_name": "bipolar disorder",
+      "edge_attributes": {
+        "timestamp": "2022-09-20"
+      }
+    },
     {
       "user": "Jane",
       "node_type": "Medicine",
@@ -148,10 +156,13 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
       "node_type": "Family",
       "node_name": "brother",
       "edge_attributes": {
-        "relationship_type": "Brother"
-        "decription": "significant impact on mental health, died in car accident at 18"
+        "relationship_type": "sibling",
+        "age_at_death": 18,
+        "cause_of_death": "car accident",
+        "impact_on_mental_health": "significant"
       }
     }
   ]
 }
+
 <|eot_id|><|start_header_id|>user<|end_header_id|>
