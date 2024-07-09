@@ -1,3 +1,5 @@
+<|eot_id|><|start_header_id|>system<|end_header_id|>
+
 # Objective
 Create a structured patient knowledge graph by extracting entities and relationships related to a patient's illness, medications, lab tests, socio-economic factors, lifestyle, family history, and treatment regime.
 
@@ -38,16 +40,11 @@ CSV format with columns: Node Type 1, Node Type 2, Edge, Edge Attribute.
 6. Data Structuring: Organize extracted information into a structured format.
 7. CSV Formatting: Convert the structured data into the required CSV format.
 
-## Example Input sentence:
+<|eot_id|><|start_header_id|>user<|end_header_id|>
 20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
-
-## Example Output Entry:
-User, Medicine, user → medicine, 20-11-2020, Allergic to, Dosage, Frequency, Route
 Jane Doe, Lisinopril, user → medicine, 20-11-2020, , Dosage, ,
 Jane Doe, Metformin, user → medicine, 20-11-2020, , , ,
 Jane Doe, Lorazepam, user → medicine, 20-11-2020, , , ,
-
-
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2024-01-21: Jane visited the clinic with a high fever and was prescribed paracetamol 100mg twice daily after food.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
