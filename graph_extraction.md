@@ -9,10 +9,10 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
 # Methodology
 1. Information Extraction
    Identify and extract relevant details from the text:
-   - User: Patient name, friends/family members, clinician 
-   - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinican/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, M B T I Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only)
-   - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc)
-   - Edge Attributes: details of the connection between User and Node (e.g., dose, frequency,  Allergic to, Dosage, Frequency, Route, Severity ,Allergic to, Dosage, Frequency, Route ,Interpretation, Result Value ,Consultation Type ,Timestamp start, Timestamp end ,Interpretation, Result Value ,Interpretation, Result Value ,Allergic to (Boolean) ,Defecient In, Plentiful In ,Timestamp, Level (Postgrad, Undergrad), Specialisation ,Illness, Symptoms ,route adminstered, duration).
+   - User: Patient name, friends/family members, clinician  
+   - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinican/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, M B T I Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only) 
+   - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc) 
+   - Edge Attributes: details of the connection between User and Node (e.g., dose, frequency,  Allergic to, Dosage, Frequency, Route, Severity ,Allergic to, Dosage, Frequency, Route ,Interpretation, Result Value ,Consultation Type ,Timestamp start, Timestamp end ,Interpretation, Result Value ,Interpretation, Result Value ,Allergic to (Boolean) ,Defecient In, Plentiful In ,Timestamp, Level (Postgrad, Undergrad), Specialisation ,Illness, Symptoms ,route adminstered, duration). 
 
 2. Contextual Analysis
    Analyze surrounding sentences for additional details when specific information is not directly stated:
@@ -27,10 +27,10 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
 
 4. Formatting for JSON Output
    Convert the structured data into JSON format with specified Key value pairs:
-   - User: Patient name, friends/family members, clinician 
-   - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinican/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, M B T I Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only)
-   - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc)
-   - Edge Attributes: This is an array of key value pairs with details of the connection between User and Node (e.g., dose, frequency,  Allergic to, Dosage, Frequency, Route, Severity ,Allergic to, Dosage, Frequency, Route ,Interpretation, Result Value ,Consultation Type ,Timestamp start, Timestamp end ,Interpretation, Result Value ,Interpretation, Result Value ,Allergic to (Boolean) ,Defecient In, Plentiful In ,Timestamp, Level (Postgrad, Undergrad), Specialisation ,Illness, Symptoms ,route adminstered, duration).
+   - User: Patient name, friends/family members, clinician (single key-value)
+   - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinican/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, M B T I Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only) (single key-value)
+   - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc) (single key-value)
+   - Edge Attributes: This is an array of key value pairs with details of the connection between User and Node (e.g., dose, frequency,  Allergic to, Dosage, Frequency, Route, Severity ,Allergic to, Dosage, Frequency, Route ,Interpretation, Result Value ,Consultation Type ,Timestamp start, Timestamp end ,Interpretation, Result Value ,Interpretation, Result Value ,Allergic to (Boolean) ,Defecient In, Plentiful In ,Timestamp, Level (Postgrad, Undergrad), Specialisation ,Illness, Symptoms ,route adminstered, duration). (single or multiple array key-value)
 
 # Implementation Steps
 1. Text Parsing: Break down the input text into sentences.
