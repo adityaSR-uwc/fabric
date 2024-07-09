@@ -44,7 +44,7 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
-{[
+{ "data": [
       {
       "user": "Jane doe",
       "node_type": "Drugs",
@@ -60,12 +60,14 @@ JSON format with key value pairs: User, Node Type, Node Name, Edge Attribute.
       "edge_attributes": {
            "timestamp": "20-11-2020" 
       }},
+      {
       "user": "Jane doe",
       "node_type": "Drugs",
       "node_name" : "Lorazepam",
       "edge_attributes": {
            "timestamp": "20-11-2020" 
-     }}
+      }
+      }
  ]
 }
 <|eot_id|><|start_header_id|>user<|end_header_id|>
