@@ -42,6 +42,7 @@ CSV format with columns: Node Type 1, Node Type 2, Edge, Edge Attribute.
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
 Jane Doe, Lisinopril, user → medicine, 20-11-2020, , Dosage, ,
 Jane Doe, Metformin, user → medicine, 20-11-2020, , , ,
 Jane Doe, Lorazepam, user → medicine, 20-11-2020, , , ,
