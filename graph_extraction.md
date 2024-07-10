@@ -64,6 +64,7 @@ Output line by line in CSV format with only the relevant columns for each senten
      - Expand into relevant columns (e.g., Date, Dose, Frequency, Route, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health, Timestamp, Severity, Allergic to, Dosage, Interpretation, Result Value, Consultation Type, Date Start, Date End, Deficient In, Plentiful In, Level (Postgrad, Undergrad), Specialisation, Symptoms, Route Administered, Duration)
      - Convert the structured data into CSV format with relevant columns for each sentence.
    - Ensure that only relevant columns are included for each sentence.
+   - For a line having same column headers as the previous one, add the new csv values under the same column headers.
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
@@ -71,8 +72,6 @@ Output line by line in CSV format with only the relevant columns for each senten
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 User, Node Type, Node Name, Date
 Jane Doe,Medicine,Lisinopril,2020-11-20
-
-User, Node Type, Node Name, Date
 Jane Doe,Medicine,Metformin,2020-11-20
 
 User, Node Type, Node Name, Date
@@ -111,8 +110,6 @@ John Smith has a complex medical and family history that has significantly impac
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 User, Node Type, Node Name, Date, Age at Death, Cause of Death
 John Smith,Family,Father,1995-05-10,45,liver cirrhosis
-
-User, Node Type, Node Name, Date, Age at Death, Cause of Death
 John Smith,Family,Brother,2002-08-15,18,car accident
 
 User, Node Type, Node Name, Age at Death, Cause of Death
