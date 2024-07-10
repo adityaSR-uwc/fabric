@@ -38,7 +38,9 @@ CSV format with columns: User, Node Type, Node Name, Timestamp, Dose, Frequency,
 4. Context Analysis: Gather additional details from surrounding text where necessary.
 5. Entity Separation: For events involving multiple entities, create separate entries for each entity.
 6. Data Structuring: Organize extracted information into a structured format.
-7. CSV Formatting: Convert the structured data into the required CSV format with columns format: User, Nose Name, Node Type, Edge attributes (expanded into columns like Timestamp, dose, frequency, Allergic to, Dosage, Frequency, Route, Severity, Allergic to, Dosage, Frequency, Route, Interpretation, Result Value, Consultation Type, Timestamp start, Timestamp end, Interpretation, Result Value, Interpretation, Result Value, Allergic to (Boolean), Deficient In, Plentiful In, Timestamp, Level (Postgrad, Undergrad), Specialisation, Illness, Symptoms, route administered, duration)
+7. CSV Formatting:
+   - Convert the structured data into the required CSV format with columns: User, Nose Name, Node Type, Edge attributes (expanded into columns like Timestamp, dose, frequency, Allergic to, Dosage, Frequency, Route, Severity, Allergic to, Dosage, Frequency, Route, Interpretation, Result Value, Consultation Type, Timestamp start, Timestamp end, Interpretation, Result Value, Interpretation, Result Value, Allergic to (Boolean), Deficient In, Plentiful In, Timestamp, Level (Postgrad, Undergrad), Specialisation, Illness, Symptoms, route administered, duration)
+   - Ensure that the correct value is placed under the corresponding column name.
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
