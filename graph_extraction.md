@@ -60,19 +60,10 @@ Output line by line in CSV format with only the relevant columns for each senten
    - User: Patient name, friends/family members, clinician (single value)
    - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinician/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, MBTI Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only) (single value)
    - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc) (single value)
-   - Edge Attributes: Expand into relevant columns (e.g., Date, Dose, Frequency, Route, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health, Timestamp, Severity, Allergic to, Dosage, Interpretation, Result Value, Consultation Type, Date Start, Date End, Deficient In, Plentiful In, Level (Postgrad, Undergrad), Specialisation, Symptoms, Route Administered, Duration)
+   - Edge Attributes:
+     - Expand into relevant columns (e.g., Date, Dose, Frequency, Route, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health, Timestamp, Severity, Allergic to, Dosage, Interpretation, Result Value, Consultation Type, Date Start, Date End, Deficient In, Plentiful In, Level (Postgrad, Undergrad), Specialisation, Symptoms, Route Administered, Duration)
+     - Convert the structured data into CSV format with relevant columns for each sentence.
    - Ensure that only relevant columns are included for each sentence.
-
-# Implementation Steps
-1. Text Parsing: Break down the input text into sentences.
-2. Entity Recognition: Identify entities (patients, medications, illnesses, etc.).
-3. Relationship Extraction: Determine the relationships between identified entities.
-4. Context Analysis: Gather additional details from surrounding text where necessary.
-5. Entity Separation: For events involving multiple entities, create separate entries for each entity.
-6. Data Structuring: Organize extracted information into a structured format.
-7. CSV Formatting:
-   - Convert the structured data into CSV format with relevant columns for each sentence.
-   - Ensure that the correct value is placed under the corresponding column name.
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
@@ -86,47 +77,37 @@ Jane Doe,Medicine,Metformin,2020-11-20
 
 User, Node Type, Node Name, Date
 Jane Doe,Medicine,Lorazepam,2020-11-20
-
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2024-01-21: Jane visited the clinic with a high fever and was prescribed paracetamol 100mg twice daily after food.
-
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 User, Node Type, Node Name, Date
 Jane,Symptoms,high fever,2024-01-21
 
 User, Node Type, Node Name, Date, Dose, Frequency, Route
 Jane,Medicine,paracetamol,2024-01-21,100mg,twice daily,oral
-
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2023-06-06: Jane reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD). She was prescribed clonazepam 250mg for two weeks once daily.
-
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 User, Node Type, Node Name, Date
 Jane,Illness,Generalised Anxiety Disorder (GAD),2023-06-06
 
 User, Node Type, Node Name, Date, Dose, Frequency, Route
 Jane,Medicine,clonazepam,2023-06-06,250mg,once daily for two weeks,oral
-
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2022-09-20: Jane was diagnosed with bipolar disorder and started on quetiapine 500mg.
-
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 User, Node Type, Node Name, Date
 Jane,Illness,bipolar disorder,2022-09-20
 
 User, Node Type, Node Name, Date, Dose
 Jane,Medicine,quetiapine,2022-09-20,500mg
-
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2021-08-25: Jane mentioned during a consultation that her brother had died in a car accident when he was 18, which had a significant impact on her mental health.
-
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 User, Node Type, Node Name, Date, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health
 Jane,Family,brother,2021-08-25,,,,,sibling,18,car accident,significant
-
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 John Smith has a complex medical and family history that has significantly impacted his mental health over the years. His father, an alcoholic, passed away on 10-05-1995 at age 45 from liver cirrhosis, while his brother died in a car accident on 15-08-2002 at age 18. His mother suffers from schizophrenia and liver cirrhosis. John's medical history includes several major events. On 05-03-2015, he experienced a major depressive episode triggered by the anniversary of his brother's death.
-
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 User, Node Type, Node Name, Date, Age at Death, Cause of Death
 John Smith,Family,Father,1995-05-10,45,liver cirrhosis
