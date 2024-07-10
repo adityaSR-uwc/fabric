@@ -4,8 +4,11 @@ from pydantic import BaseModel
 import re
 import csv
 import io
+from io import StringIO
 import json
 import logging
+from fastapi.responses import JSONResponse
+from fastapi import HTTPException
 
 app = FastAPI()
 
@@ -105,25 +108,6 @@ def extract_history(assistant_message):
             history.append(record)
     return history
 
-def clean_edge_attributes(attributes_str):
-    """Clean and parse the edge attributes string."""
-    attributes_str = attributes_str.replace("'", '"')
-    attributes_dict = {}
-    
-    # Split attributes based on comma outside of any brackets
-    parts = re.split(r',\s*(?![^[]*\])', attributes_str.strip('{}'))
-    
-    for part in parts:
-        if ':' in part:
-            key, value = part.split(':', 1)
-            key = key.strip().strip('"')
-            value = value.strip().strip('"')
-            if value.startswith('[') and value.endswith(']'):
-                value = json.loads(value)
-            attributes_dict[key] = value
-    
-    return attributes_dict
-
 def extract_graph_data(assistant_message):
     """Extract graph data from assistant message and make a second API call for corrections."""
     graph_data = []
@@ -149,44 +133,7 @@ def extract_graph_data(assistant_message):
                     graph_data.append(record)
 
     logger.debug("Graph data before second API call: %s", graph_data)
-
-    # Prepare input for the second API call
-    input_data = {"graph_data": graph_data}
-    system_url = "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/graph2.md"
-    user_url = "https://raw.githubusercontent.com/danielmiessler/fabric/main/patterns/summarize/user.md"
-
-    system_content = fetch_content_from_url(system_url)
-    user_file_content = fetch_content_from_url(user_url)
-
-    system_message = {"role": "system", "content": system_content}
-    user_message = {"role": "user", "content": user_file_content + "\n" + json.dumps(input_data, indent=2)}
-    messages = [system_message, user_message]
-
-    try:
-        response = requests.post(
-            f"{OPENAI_BASE_URL}/chat/completions",
-            json={
-                "model": DEFAULT_MODEL,
-                "messages": messages,
-                "temperature": 0.0,
-                "top_p": 1,
-                "frequency_penalty": 0.1,
-                "presence_penalty": 0.1,
-            },
-            headers={"Authorization": f"Bearer {OPENAI_API_KEY}"}
-        )
-        response.raise_for_status()
-        new_assistant_message = response.json()["choices"][0]["message"]["content"]
-
-        # Log the raw response for debugging
-        logger.debug("Raw new_assistant_message: %s", new_assistant_message)
-
-        abc = reformat_graph_data(new_assistant_message)
-    except Exception as e:
-        logger.error("An error occurred while processing the 2nd request: %s", e)
-        raise HTTPException(status_code=500, detail=f"An error occurred while processing the 2nd request: {str(e)}")
-
-    return abc
+    return graph_data
 
 def reformat_graph_data(data: str) -> dict:
     try:
@@ -216,6 +163,187 @@ def create_messages(system_url, user_url, input_data):
     system_message = {"role": "system", "content": system_content}
     user_message = {"role": "user", "content": user_file_content + "\n" + input_data}
     return [system_message, user_message]
+
+def chunk_text(text: str, chunk_size: int, overlap: int) -> list:
+    words = text.split()
+    chunks = []
+    i = 0
+    while i < len(words):
+        chunk = ' '.join(words[i:i + chunk_size])
+        chunks.append(chunk)
+        i += chunk_size - overlap
+    return chunks
+
+def process_chunks(chunks: list, model: str, prompt: str, api_key: str) -> list:
+    results = []
+    headers = {"Authorization": f"Bearer {api_key}"}
+    
+    for chunk in chunks:
+        messages = [
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": chunk}
+        ]
+        
+        response = requests.post(
+            f"{OPENAI_BASE_URL}/chat/completions",
+            json={
+                "model": model,
+                "messages": messages,
+                "temperature": 0.0,
+                "top_p": 1,
+                "frequency_penalty": 0.1,
+                "presence_penalty": 0.1,
+            },
+            headers=headers
+        )
+        response.raise_for_status()
+        assistant_message = response.json()["choices"][0]["message"]["content"]
+        
+        # Debug: Log the raw assistant_message content
+        logger.debug("Raw assistant_message content: %s", assistant_message)
+        
+        try:
+            # Extract JSON part from the response
+            start_index = assistant_message.find("{")
+            end_index = assistant_message.rfind("}")
+            if start_index != -1 and end_index != -1:
+                json_part = assistant_message[start_index:end_index + 1]
+                result = clean_and_format_json(json_part)
+                results.append(result)
+            else:
+                logger.error("No JSON found in assistant message")
+        except ValueError as e:
+            logger.error("Error processing chunk: %s", e)
+    
+    return results
+
+def process_chunks(chunks: list, model: str, prompt: str, api_key: str) -> list:
+    results = []
+    headers = {"Authorization": f"Bearer {api_key}"}
+    
+    for chunk in chunks:
+        messages = [
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": chunk}
+        ]
+        
+        response = requests.post(
+            f"{OPENAI_BASE_URL}/chat/completions",
+            json={
+                "model": model,
+                "messages": messages,
+                "temperature": 0.0,
+                "top_p": 1,
+                "frequency_penalty": 0.1,
+                "presence_penalty": 0.1,
+            },
+            headers=headers
+        )
+        response.raise_for_status()
+        assistant_message = response.json()["choices"][0]["message"]["content"]
+
+        logger.debug("Raw assistant_message content: %s", assistant_message)
+
+        try:
+            json_part = extract_json_from_response(assistant_message)
+            result = json.loads(json_part)
+            results.append(result)
+        except ValueError as e:
+            logger.error("Error processing chunk: %s", e)
+    
+    return results
+
+def extract_json_from_response(response_text: str) -> str:
+    start_index = response_text.find("{")
+    end_index = response_text.rfind("}")
+    if start_index == -1 or end_index == -1:
+        raise ValueError("No JSON found in the response")
+    json_part = response_text[start_index:end_index + 1]
+    return json_part
+
+def merge_results(results: list) -> dict:
+    merged_data = {"data": []}
+    for result in results:
+        merged_data["data"].extend(result["data"])
+    return merged_data
+
+def clean_and_format_json(json_data_str: str) -> str:
+    try:
+        def quote_keys_and_values(match):
+            key, value = match.groups()
+            return f'"{key}": "{value}"'
+
+        # Ensure keys are quoted
+        json_data_str = re.sub(r'(?<!")(\b\w+\b)(?=\s*:)', r'"\1"', json_data_str)
+        
+        # Ensure values are quoted if they are words or numbers
+        json_data_str = re.sub(r'(:\s*)([^,\[\]{}"]+)(?=[,\}\]])', r'\1"\2"', json_data_str)
+        
+        # Remove extraneous whitespace
+        json_data_str = re.sub(r'\s+', ' ', json_data_str)
+
+        # Fix missing commas
+        json_data_str = re.sub(r'([^\]},\s])\s*([\{\["])', r'\1,\2', json_data_str)
+
+        # Fix specific known issues manually
+        json_data_str = re.sub(r'(\d{2}-\d{2}-\d{4})', r'"\1"', json_data_str)  # Quote dates
+        json_data_str = re.sub(r'(\d+mg)', r'"\1"', json_data_str)  # Quote mg units
+        json_data_str = re.sub(r'(\d+ times daily)', r'"\1"', json_data_str)  # Quote frequency
+        json_data_str = re.sub(r'(\bas needed\b)', r'"\1"', json_data_str)  # Quote "as needed"
+        json_data_str = re.sub(r'(\boral\b)', r'"\1"', json_data_str)  # Quote "oral"
+        json_data_str = re.sub(r'(\d+)', r'"\1"', json_data_str)  # Quote standalone numbers
+
+        # Ensure all values and keys are properly quoted in key-value pairs
+        json_data_str = re.sub(r'([a-zA-Z_]+):\s*"([^"]+)"', quote_keys_and_values, json_data_str)
+        
+        # Remove trailing commas
+        json_data_str = re.sub(r',\s*([\}\]])', r'\1', json_data_str)
+
+        # Convert the cleaned JSON string to a dictionary
+        json.loads(json_data_str)  # This ensures it is a valid JSON string
+        return json_data_str
+    except json.JSONDecodeError as e:
+        raise ValueError(f"JSON decoding error: {e.msg} at position {e.pos}")
+    except ValueError as e:
+        raise ValueError(f"Value error: {str(e)}")
+  
+def csv_to_json(assistant_message):
+    graph_data = []
+    try:
+        reader = csv.reader(io.StringIO(assistant_message))
+        
+        # Skip lines until we find the header line
+        headers = None
+        for line in reader:
+            if "User,Node Type,Node Name" in ','.join(line):
+                headers = line
+                break
+        
+        if headers is None or len(headers) < 3:
+            raise ValueError("The headers do not contain at least 3 fields.")
+        
+        for row in reader:
+            if len(row) >= 3:
+                record = {
+                    "User": row[0].strip("\""),
+                    "Node Type": row[1].strip("\""),
+                    "Node Name": row[2].strip("\""),
+                    "edge_attributes": {}
+                }
+                
+                # Add remaining columns to edge_attributes if they have non-null values
+                for i in range(3, len(headers)):
+                    if i < len(row) and row[i].strip("\""):
+                        record["edge_attributes"][headers[i].strip("\"")] = row[i].strip("\"")
+                
+                graph_data.append(record)
+            else:
+                print(f"Skipping row due to length mismatch: {row}")
+    
+    except Exception as e:
+        print(f"An error occurred while processing the request: {e}")
+    
+    return graph_data
 
 pattern_path_mappings = {
     "medicine": {"system_url": "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/medicine.md",
@@ -249,6 +377,18 @@ async def milling(pattern: str, data: InputData):
 
     messages = create_messages(system_url, user_url, input_data)
 
+    # if pattern == "graph_extraction":
+    #     prompt = fetch_content_from_url(system_url)
+    #     chunks = chunk_text(input_data, 200, 50)  # Define chunk size and overlap
+    #     results = process_chunks(chunks, DEFAULT_MODEL, prompt, OPENAI_API_KEY)
+    #     logger.info("Results: %s", results)
+    #     merged_data = merge_results(results)
+    #     graph_data = clean_and_format_json(merged_data)
+    #     with open("assistant_message.txt", "w") as file:
+    #             file.write(results)
+    #     return {"assistant_message": merged_data, "json" : graph_data}
+    # else:
+
     try:
         response = requests.post(
             f"{OPENAI_BASE_URL}/chat/completions",
@@ -264,6 +404,9 @@ async def milling(pattern: str, data: InputData):
         )
         response.raise_for_status()
         assistant_message = response.json()["choices"][0]["message"]["content"]
+    
+        with open("assistant_message.txt", "w") as file:
+            file.write(assistant_message)
 
         if pattern == "medicine":
             medication_history = extract_medication_history(assistant_message)
@@ -278,8 +421,8 @@ async def milling(pattern: str, data: InputData):
             history = extract_history(assistant_message)
             return {"history": history}
         elif pattern == "graph_extraction":
-            graph_data = extract_graph_data(assistant_message)
-            return {"graph_data": graph_data}
+            graph_data = csv_to_json(assistant_message)
+            return {"data" : graph_data, "assistant_message": assistant_message}
         else:
             return {"response": assistant_message}
 
