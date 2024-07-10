@@ -43,27 +43,32 @@ CSV format with columns: User, Node Type, Node Name, Timestamp, Dose, Frequency,
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 20-11-2020: Jane Doe started taking Lisinopril, Metformin, and Lorazepam.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User, Node Type, Node Name, Timestamp, Dose, Frequency, Route, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health
 Jane Doe,Medicine,Lisinopril,20-11-2020,,,,,,,
 Jane Doe,Medicine,Metformin,20-11-2020,,,,,,,
 Jane Doe,Medicine,Lorazepam,20-11-2020,,,,,,,
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2024-01-21: Jane visited the clinic with a high fever and was prescribed paracetamol 100mg twice daily after food.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User, Node Type, Node Name, Timestamp, Dose, Frequency, Route, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health
 Jane,Symptoms,high fever,2024-01-21,,,,,,,
 Jane,Medicine,paracetamol,2024-01-21,100mg,twice daily,oral,,,,
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2023-06-06: Jane reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD). She was prescribed clonazepam 250mg for two weeks once daily.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User, Node Type, Node Name, Timestamp, Dose, Frequency, Route, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health
 Jane,Illness,Generalised Anxiety Disorder (GAD),2023-06-06,,,,,,,
 Jane,Medicine,clonazepam,2023-06-06,250mg,once daily for two weeks,oral,,,,
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2022-09-20: Jane was diagnosed with bipolar disorder and started on quetiapine 500mg.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User, Node Type, Node Name, Timestamp, Dose, Frequency, Route, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health
 Jane,Illness,bipolar disorder,2022-09-20,,,,,,,
 Jane,Medicine,quetiapine,2022-09-20,500mg,,,,,
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2021-08-25: Jane mentioned during a consultation that her brother had died in a car accident when he was 18, which had a significant impact on her mental health.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User, Node Type, Node Name, Timestamp, Dose, Frequency, Route, Relationship Type, Age at Death, Cause of Death, Impact on Mental Health
 Jane,Family,brother,,,,,,sibling,18,car accident,significant
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
