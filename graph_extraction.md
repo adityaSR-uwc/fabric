@@ -12,7 +12,36 @@ CSV format with columns: User, Node Type, Node Name, Date, Dose, Frequency, Rout
    - User: Patient name, friends/family members, clinician  
    - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinician/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, MBTI Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only) 
    - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc) 
-   - Edge Attributes: this contains the details of the connection between User and Node (e.g., dose, frequency, Allergic to, Dosage, Frequency, Route, Severity, Allergic to, Dosage, Frequency, Route, Interpretation, Result Value, Consultation Type, Date start, Date end, Interpretation, Result Value, Interpretation, Result Value, Allergic to (Boolean), Deficient In, Plentiful In, Date, Level (Postgrad, Undergrad), Specialisation, Illness, Symptoms, route administered, duration).
+   - Edge Attributes: this contains the details of the connection between User and Node
+      For example,
+      - For Node Type "Illness", the edge attributes can be Timestamp, Severity
+      - For Node Type "Symptoms", the edge attributes can be Timestamp, Severity
+      - For Node Type "Medicine", the edge attributes can be Timestamp, Allergic to, Dosage, Frequency, Route
+      - For Node Type "Lab Test", the edge attributes can be Timestamp, Interpretation, Result Value
+      - For Node Type "Clinician/Expert", the edge attributes can be Timestamp, Consultation Type
+      - For Node Type "Hospitalisation", the edge attributes can be Timestamp start, Timestamp end
+      - For Node Type "Vitals", the edge attributes can be Timestamp, Interpretation, Result Value
+      - For Node Type "Assessment", the edge attributes can be Timestamp, Interpretation, Result Value
+      - For Node Type "Food", the edge attributes can be Timestamp, Allergic to (Boolean)
+      - For Node Type "Nutrients", the edge attributes can be Timestamp, Deficient In, Plentiful In
+      - For Node Type "Family", the edge attributes can be Relationship Type
+      - For Node Type "Lifestyle", the edge attributes can be Timestamp
+      - For Node Type "Gene", the edge attributes can be Timestamp
+      - For Node Type "Country", the edge attributes can be Timestamp
+      - For Node Type "Gender", the edge attributes can be Timestamp
+      - For Node Type "Sex", the edge attributes can be Timestamp
+      - For Node Type "Sexual Preference", the edge attributes can be Timestamp
+      - For Node Type "Relationship Status", the edge attributes can be Timestamp
+      - For Node Type "Occupation", the edge attributes can be Timestamp
+      - For Node Type "Income", the edge attributes can be Timestamp
+      - For Node Type "Political Inclination", the edge attributes can be Timestamp
+      - For Node Type "Religion", the edge attributes can be Timestamp
+      - For Node Type "Education", the edge attributes can be Timestamp, Level (Postgrad, Undergrad), Specialisation
+      - For Node Type "Family Structure", the edge attributes can be Timestamp
+      - For Node Type "MBTI Personality", the edge attributes can be Timestamp
+      - For Node Type "Physical Fitness", the edge attributes can be Timestamp
+      - For Node Type "Medicine", the edge attributes can be Illness, Symptoms, Timestamp
+      - For Node Type "Treatment Route", the edge attributes can be route administered, duration, Timestamp
 
 2. Contextual Analysis
    Analyze surrounding sentences for additional details when specific information is not directly stated:
@@ -39,7 +68,9 @@ CSV format with columns: User, Node Type, Node Name, Date, Dose, Frequency, Rout
 5. Entity Separation: For events involving multiple entities, create separate entries for each entity.
 6. Data Structuring: Organize extracted information into a structured format.
 7. CSV Formatting:
-   - Convert the structured data into the required CSV format with columns: User, Nose Name, Node Type, Edge attributes (expanded into columns like Date, dose, frequency, Allergic to, Dosage, Frequency, Route, Severity, Allergic to, Dosage, Frequency, Route, Interpretation, Result Value, Consultation Type, Date start, Date end, Interpretation, Result Value, Interpretation, Result Value, Allergic to (Boolean), Deficient In, Plentiful In, Level (Postgrad, Undergrad), Specialisation, Illness, Symptoms, route administered, duration)
+   - Convert the structured data into the required CSV format with columns: User, Nose Name, Node Type, Edge attributes (Edge attributes expanded into columns like Date, dose, frequency, Allergic to, Dosage, Frequency, Route, Severity, Allergic to, Dosage, Frequency, Route, Interpretation, Result Value, Consultation Type, Date start, Date end, Interpretation, Result Value, Interpretation, Result Value, Allergic to (Boolean), Deficient In, Plentiful In, Level (Postgrad, Undergrad), Specialisation, Illness, Symptoms, route administered, duration)
+   - All the Edge attributes will be put up as columns
+   - The columns with no value extracted for will be left empty  
    - Ensure that the correct value is placed under the corresponding column name.
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
