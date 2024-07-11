@@ -135,14 +135,9 @@ def extract_graph_data(assistant_message):
             # Process data row
             row = line.split(",")
             min_len = min(len(row), len(headers))
-            record = {headers[i]: row[i].strip("\"") for i in range(min_len)}
-            edge_attributes = {headers[i]: row[i].strip("\"") for i in range(3, min_len) if row[i].strip("\"")}
+            record = {headers[i]: row[i].strip("\"") for i in range(3) if i < min_len}
+            edge_attributes = {headers[i]: row[i].strip("\"") for i in range(3, min_len) if i >= 3}
             
-            # Ensure edge attributes do not duplicate main key-value pairs
-            for key in ["Date", "Dose", "Frequency", "Route", "Start Date", "End Date", "Age at Death", "Cause of Death"]:
-                if key in record:
-                    edge_attributes[key] = record.pop(key)
-                    
             record["edge_attributes"] = edge_attributes
             graph_data.append(record)
 
