@@ -139,7 +139,7 @@ def extract_graph_data(assistant_message):
             edge_attributes = {headers[i]: row[i].strip("\"") for i in range(3, min_len) if row[i].strip("\"")}
             
             # Ensure edge attributes do not duplicate main key-value pairs
-            for key in ["Date", "Dose", "Frequency", "Route", "Start Date", "End Date"]:
+            for key in ["Date", "Dose", "Frequency", "Route", "Start Date", "End Date", "Age at Death", "Cause of Death"]:
                 if key in record:
                     edge_attributes[key] = record.pop(key)
                     
