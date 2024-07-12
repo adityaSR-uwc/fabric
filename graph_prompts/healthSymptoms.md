@@ -42,32 +42,32 @@ On 2023-06-06, Jane reported anxiety and was diagnosed with Generalised Anxiety 
 
 ## Example Output
 
-User, Node Type, Node Name, Date
-Jane, Illness, Generalised Anxiety Disorder (GAD), 2023-06-06
-Jane, Symptoms, anxiety, 2023-06-06
+User,Node Type,Node Name,Date
+Jane,Illness,Generalised Anxiety Disorder (GAD),2023-06-06
+Jane,Symptoms,anxiety,2023-06-06
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 Mary reported experiencing fatigue and was later diagnosed with anemia on 2022-11-03.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 
 User, Node Type, Node Name, Date
-Mary, Symptoms, fatigue, 2022-11-03
-Mary, Illness, anemia, 2022-11-03
+Mary,Symptoms,fatigue,2022-11-03
+Mary,Illness,anemia,2022-11-03
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 Robert had a persistent cough which was identified as bronchitis. This happened on 2021-08-15.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 
-User, Node Type, Node Name, Date
-Robert, Symptoms, persistent cough, 2021-08-15
-Robert, Illness, bronchitis, 2021-08-15
+User,Node Type,Node Name,Date
+Robert,Symptoms,persistent cough,2021-08-15
+Robert,Illness,bronchitis,2021-08-15
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 2020-02-29: Alice experienced shortness of breath and was diagnosed with asthma.
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 
-User, Node Type, Node Name, Date
-Alice, Symptoms, shortness of breath, 2020-02-29
-Alice, Illness, asthma, 2020-02-29
+User,Node Type,Node Name,Date
+Alice,Symptoms,shortness of breath,2020-02-29
+Alice,Illness,asthma,2020-02-29
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
