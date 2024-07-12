@@ -24,6 +24,12 @@ Output line by line in CSV format with only the relevant columns for each senten
       - For Node Type "Family Structure", the edge attributes can be Timestamp
       - For Node Type "MBTI Personality", the edge attributes can be Timestamp
       - For Node Type "Physical Fitness", the edge attributes can be Timestamp
+      - For Node Type "Gene", the edge attributes can be Timestamp
+      - For Node Type "Country", the edge attributes can be Timestamp
+      - For Node Type "Gender", the edge attributes can be Timestamp
+      - For Node Type "Sex", the edge attributes can be Timestamp
+      - For Node Type "Sexual Preference", the edge attributes can be Timestamp
+      - For Node Type "Relationship Status", the edge attributes can be Timestamp
 
 2. Contextual Analysis
    Analyze surrounding sentences for additional details when specific information is not directly stated:
@@ -72,6 +78,27 @@ John identified as politically inclined towards the left. This happened on 2020-
 
 User, Node Type, Node Name, Date
 John, Political Inclination, left, 2020-08-20
+
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+2023-05-15: A genetic test revealed that Jane has the BRCA1 gene mutation.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+User, Node Type, Node Name, Date
+Jane, Gene, BRCA1, 2023-05-15
+
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+2021-04-20: Robert returned to the United States after completing his studies abroad.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+User, Node Type, Node Name, Date
+Robert, Country, United States, 2021-04-20
+
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+021-06-18: Taylor's medical record was updated to reflect their gender as non-binary.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+User, Node Type, Node Name, Date
+Taylor, Gender, non-binary, 2021-06-18
 
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
