@@ -125,7 +125,7 @@ User, Node Type, Node Name, Start Date, End Date
 Jane, Hospitalisation, major depressive episode,2015-03-05,2015-04-03
 
 User, Node Type, Node Name, Date
-Jane,Therapy,Pstchotherapy,2015-03-05
+Jane,Therapy,Psychotherapy,2015-03-05
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
 At the age of 15, Jane had a severe bout of Pneumonia.
