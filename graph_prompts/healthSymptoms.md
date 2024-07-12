@@ -1,7 +1,7 @@
 <|eot_id|><|start_header_id|>system<|end_header_id|>
 
 # Objective
-Create a structured patient knowledge graph by extracting entities and relationships related to a patient's illness and symptoms.
+Create a structured patient knowledge graph by extracting entities and relationships related to a patient's illness and symptoms and give out a CSV output.
 
 # Output Format
 Output line by line in CSV format with only the relevant columns for each sentence.
