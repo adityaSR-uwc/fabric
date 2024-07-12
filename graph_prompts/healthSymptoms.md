@@ -37,9 +37,10 @@ Output line by line in CSV format with only the relevant columns for each senten
      - Ensure that only relevant columns are included for each sentence.
      - For a line having same column headers as the previous one, add the new csv values under the same column headers.
 
-<|eot_id|><|start_header_id|>user<|end_header_id|>
+## Example Input
 On 2023-06-06, Jane reported anxiety and was diagnosed with Generalised Anxiety Disorder (GAD).
-<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+## Example Output
 
 User, Node Type, Node Name, Date
 Jane, Illness, Generalised Anxiety Disorder (GAD), 2023-06-06
