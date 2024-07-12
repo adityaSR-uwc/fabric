@@ -112,11 +112,25 @@ User, Node Type, Node Name, Date, Age at Death, Cause of Death
 John Smith,Family,Father,1995-05-10,45,liver cirrhosis
 John Smith,Family,Brother,2002-08-15,18,car accident
 
-User, Node Type, Node Name, Age at Death, Cause of Death
+User, Node Type, Node Name, Cause of Death
 John Smith,Family,Mother,schizophrenia and liver cirrhosis
 
 User, Node Type, Node Name, Date
 John Smith,Illness,major depressive episode,2015-03-05
 
 <|eot_id|><|start_header_id|>user<|end_header_id|>
+On 05-03-2015, Jane experienced a major depressive episode triggered by the anniversary of her brother's death. She was hospitalized for four weeks, receiving intensive psychotherapy.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User, Node Type, Node Name, Start Date, End Date
+Jane, Hospitalisation, major depressive episode,2015-03-05,2015-04-03
 
+User, Node Type, Node Name, Date
+Jane,Therapy,Pstchotherapy,2015-03-05
+
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+At the age of 15, Jane had a severe bout of Pneumonia.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+User, Node Type, Node Name, Age at Illness
+Jane,Illness,Pneumonia,15
+
+<|eot_id|><|start_header_id|>user<|end_header_id|>
