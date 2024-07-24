@@ -135,7 +135,7 @@ def chunk_text(text: str, chunk_size: int, overlap: int) -> list:
         i += chunk_size - overlap
     return chunks
 
-def process_chunks(chunks: list, prompt: str) -> list:
+def process_chunks(chunks: list, prompt: str) -> dict:
     results = []
     graph_keyword_parser = PydanticOutputParser(pydantic_object=NodeList)
 
@@ -155,20 +155,51 @@ def process_chunks(chunks: list, prompt: str) -> list:
 
         chain = graph_prompt | llm | graph_keyword_parser
 
-        response = chain.invoke({"input": chunk})
-        if response:
-            results.extend(response.node)
-        else:
-            logger.error("Received empty response for chunk: %s", chunk)
+        try:
+            response = chain.invoke({"input": chunk})
+            logger.debug("Raw assistant_message content: %s", response)
 
-        logger.debug("Raw assistant_message content: %s", response)
+            if isinstance(response, str):
+                try:
+                    response_data = json.loads(response)
+                    if 'node' in response_data:
+                        results.extend(response_data['node'])
+                    else:
+                        logger.error("Response does not contain 'node': %s", response_data)
+                except json.JSONDecodeError as e:
+                    logger.error("Failed to decode JSON response: %s", e)
+                    continue
+            elif isinstance(response, dict):
+                if 'node' in response:
+                    results.extend(response['node'])
+                else:
+                    logger.error("Response does not contain 'node': %s", response)
+            elif isinstance(response, NodeList):
+                results.extend(response.node)
+            else:
+                logger.error("Unexpected response type: %s", type(response))
 
-    return results
+        except Exception as e:
+            logger.error("Error processing chunk: %s", chunk)
+            logger.error("Exception: %s", str(e))
+
+    logger.debug("Results before wrapping: %s", results)
+    return {"node": results}
 
 def convert_edge_attributes_to_strings(node):
     if 'edge_attributes' in node:
         node['edge_attributes'] = {key: str(value) if value is not None else None for key, value in node['edge_attributes'].items()}
     return node
+
+def filter_duplicates(nodes):
+    seen = set()
+    filtered_nodes = []
+    for node in nodes:
+        node_tuple = (node['user'], node['node_type'], node['node_name'], tuple(node['edge_attributes'].items()))
+        if node_tuple not in seen:
+            seen.add(node_tuple)
+            filtered_nodes.append(node)
+    return filtered_nodes
 
 def parse_timeline(response):
     try:
@@ -632,16 +663,6 @@ sos,Suicide,Depression,Anxiety,Trauma<|eot_id|> """,
                  "user_url": "https://raw.githubusercontent.com/danielmiessler/fabric/main/patterns/summarize/user.md"}
 }
 
-graph_prompts = {
-    "health_conditions_and_symptoms": "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/graph_prompts/health_conditions_and_symptoms.md",
-    "medications_and_treatments": "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/graph_prompts/medications_and_treatments.md",
-    "lab_tests_and_assessments": "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/graph_prompts/labtests.md",
-    "healthcare_providers_and_facilities": "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/graph_prompts/healthcare_providers_and_facilities.md",
-    "diet_and_nutrition": "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/graph_prompts/diet_and_nutrition.md",
-    "personal_and_socioeconomic_factors": "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/graph_prompts/personal_and_socioeconomic_factors.md",
-    "family_history": "https://raw.githubusercontent.com/adityaSR-uwc/fabric/main/graph_prompts/family_history.md",
-}
-
 GRAPH_PROMPT = """
 system
 
@@ -654,9 +675,9 @@ Create a structured patient knowledge graph by extracting entities and relations
 # Methodology
 1. Information Extraction
    Identify and extract relevant details from the text:
-   - User: Patient name, friends/family members, clinician  
-   - Node Type: Illness, Symptoms, Medicine, Lab Test, Clinician/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, MBTI Personality, Physical Fitness, Medicine, Treatment Route (one of these fields only) 
-   - Node Name: name of the entity in node type (paracetamol, Fever, CBC etc) 
+   - User: Name of the Patient or friends/family member 
+   - Node Type: One of the following - Illness, Symptoms, Medicine, Lab Test, Clinician/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, MBTI Personality, Physical Fitness, Medicine, Treatment Route. 
+   - Node Name: name of the entity in node type (this field will always have a string value, like paracetamol, Fever, CBC, Therapist etc) 
    - Edge Attributes: this contains the details of the connection between User and Node
       For example,
       - For Node Type "Illness", the edge attributes can be Timestamp, Severity
@@ -692,20 +713,17 @@ Create a structured patient knowledge graph by extracting entities and relations
    Analyze surrounding sentences for additional details when specific information is not directly stated:
    - Dates: Check preceding or following sentences to find dates or times.
    - Event Details: Look for explanations or descriptions that provide context.
-   - Have a 
 
 3. Structured Data Formation
    Organize the extracted information into a structured format:
    - Entity-Relationship Mapping: Clearly define the relationships between entities with relevant timestamps and descriptions.
    - Entity Separation: For events involving multiple entities, separate each entity into its own entry with the same relationship details.
-
+   
 User Information:
-- Name - Ayush
-- Gender - Male
-- Age - 24
-- Date of Birth - 25-09-2000
+- Name - Ayush Kumar Bar
 
-user {input}
+user 
+{input}
 assistant
 Note: only provide in the format: {format_instructions}. Don't provide notes and additional information."""
 
@@ -713,10 +731,10 @@ class Node(BaseModel):
     user: str = Field(None, description="Patient name, friends/family members, clinician")
     node_type: str = Field(None, description="One of the following: Illness, Symptoms, Medicine, Lab Test, Clinician/Expert, Hospitalisation, Vitals, Assessment, Food, Nutrients, Family, Lifestyle, Gene, Country, Gender, Sex, Sexual Preference, Relationship Status, Occupation, Income, Political Inclination, Religion, Education, Family Structure, MBTI Personality, Physical Fitness, Medicine, Treatment Route.")
     node_name: str = Field("", description="Name of the entity in node type (paracetamol, Fever, CBC etc)")
-    edge_attributes: Dict[str, Union[str, int, None]] = Field(default_factory=dict, description="Details of the connection between User and Node.")
+    edge_attributes: Optional[Dict[str, Union[str, int, float, None]]] = Field({}, description="Details of the connection between User and Node.")
 
 class NodeList(BaseModel):
-    node: List[Node] = []
+    node: List[Node] = Field([], description="List of nodes")
 
 class InputData(BaseModel):
     input: str
@@ -788,19 +806,26 @@ async def timeline(data: InputData):
 
 @app.post("/graph_data")
 async def graph_data(data: InputData):
-    input_data = data.input
-    chunk_size = 200  # Define chunk size
-    overlap = 50  # Define overlap
-    chunks = chunk_text(input_data, chunk_size, overlap)
+    sanitized_data = data.input
+    
+    chunk_size = 500
+    overlap = 50
+    
+    chunks = chunk_text(sanitized_data, chunk_size, overlap)
     results = process_chunks(chunks, GRAPH_PROMPT)
 
-    if not results:
-        raise HTTPException(status_code=500, detail="Failed to process chunks into graph data.")
+    # Convert edge attributes to strings and filter duplicates
+    converted_nodes = [convert_edge_attributes_to_strings(node.dict()) for node in results['node']]
+    filtered_nodes = filter_duplicates(converted_nodes)
 
-    # Convert all edge attributes to strings
-    results = [convert_edge_attributes_to_strings(node.dict()) for node in results]
-    
-    return {"graph_data": results}
+    # Validate the results
+    try:
+        validated_results = NodeList(node=[Node(**node) for node in filtered_nodes])
+        return validated_results.dict()
+    except ValidationError as e:
+        logger.error("Validation error: %s", e)
+        logger.error("Results causing the error: %s", filtered_nodes)
+        raise HTTPException(status_code=500, detail=str(e))
     
 if __name__ == "__main__":
     import uvicorn
