@@ -692,11 +692,18 @@ Create a structured patient knowledge graph by extracting entities and relations
    Analyze surrounding sentences for additional details when specific information is not directly stated:
    - Dates: Check preceding or following sentences to find dates or times.
    - Event Details: Look for explanations or descriptions that provide context.
+   - Have a 
 
 3. Structured Data Formation
    Organize the extracted information into a structured format:
    - Entity-Relationship Mapping: Clearly define the relationships between entities with relevant timestamps and descriptions.
    - Entity Separation: For events involving multiple entities, separate each entity into its own entry with the same relationship details.
+
+User Information:
+- Name - Ayush
+- Gender - Male
+- Age - 24
+- Date of Birth - 25-09-2000
 
 user {input}
 assistant
