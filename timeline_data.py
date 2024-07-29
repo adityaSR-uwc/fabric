@@ -74,44 +74,45 @@ def merge_timeline_chunks(chunks):
 timeline_prompt = f"""system
 
 # Objective:
-Create a structured and chronological patient timeline of all the clinical and important life events. Focusing on the patients illness, medication, lab-tests, socio-economic factors, lifestyle, family history, treatment regime.
+Create a structured and chronological patient timeline of all the clinical and important life events. Focus on the patient's illness, medication, lab tests, socio-economic factors, lifestyle, family history, and treatment regime.
 
 # Output Format:
-  Datetime - Event Type - Event Name - Event Description - Event Tags 
- 
+  Datetime - Event Type - Event Name - Event Description - Event Tags
+
 # Steps to extract clinical and important life events
 
 1.*Extract Relevant Information:*
   Identify and extract relevant details from the text:
    - Datetime: date-time when the event is taking place
-   - Event Type: It can only be one of the following: "Illness", "Symptoms", "Medicine", "Lab Test", "Clinician/Expert", "Hospitalisation", "Vitals", "Assessment", "Food", "Nutrients", "Family", "Lifestyle", "Gene", "Country", "Gender", "Sex", "Sexual Preference", "Relationship Status", "Occupation", "Income", "Political Inclination", "Religion", "Education", "Family Structure", "M B T I Personality", "Physical Fitness" or "Treatment Route".
-   - Event Name: name of the event 
-   - Event Description: the information regarding the event, in a concise and short sentence.
-   - Event Tags: a list of tags relevant for the Event
+   - Event Type: It can only be one of the following: "Illness", "Symptoms", "Medicine", "Lab Test", "Clinician/Expert", "Hospitalisation", "Vitals", "Assessment", "Food", "Nutrients", "Family", "Lifestyle", "Gene", "Country", "Gender", "Sex", "Sexual Preference", "Relationship Status", "Occupation", "Income", "Political Inclination", "Religion", "Education", "Family Structure", "M B T I Personality", "Physical Fitness", "Treatment Route".
+   - Event Name: name of the event
+   - Event Description: concise information regarding the event.
+   - Event Tags: a list of tags relevant to the event
 
 2.*Structure the Information:*
-   - Create entries for each relevant event along with Date-time and Event Name.
-   - Classify the event name into one of the following Event Type: "Illness", "Symptoms", "Medicine", "Lab Test", "Clinician/Expert", "Hospitalisation", "Vitals", "Assessment", "Food", "Nutrients", "Family", "Lifestyle", "Gene", "Country", "Gender", "Sex", "Sexual Preference", "Relationship Status", "Occupation", "Income", "Political Inclination", "Religion", "Education", "Family Structure", "M B T I Personality", "Physical Fitness" or "Treatment Route".
+   - Create entries for each relevant event along with Datetime and Event Name.
+   - Classify the event name into one of the Event Types mentioned above.
    - Add a short event description to the relevant event.
-   - Use the event description to extract the clinical tags.
-   - Current date is {now_datetime} 
+   - Use the event description to extract the event tags.
+   - Current date is {now_datetime}
 
-3.*Format the Information*
-    - Example format of the output :-
+3.*Format the Information:*
+    - Example format of the output:
        - 2024-01-21 12:45:00 - Medicine - Paracetamol - Took paracetamol 100mg for fever - Medicine, Fever
        - 2023-06-06 13:45:00 - Medicine - Clonazepam - Took clonazepam 250mg for Generalised Anxiety Disorders - Medicine, Anxiety, Generalised Anxiety Disorder 
        - 2022-09-20 16:50:00 - Medicine - Olanzapine - Took olanzapine 500mg for bipolar disorder - Medicine, Bipolar Disorder 
        - 2021-08-25 15:30:00 - Family - Brother's Death - John's brother died in a car accident at age 18 - Family History, Death, Brother, Trauma
-       - unknown - Symptoms - Fever -  John had a fever of 104 degrees - Fever
-       - unknown - Family - Father's death - John's Father died due to old age - Family History, Death, Father
+       - unknown - Symptoms - Fever - John had a fever of 104 degrees - Fever
+       - unknown - Family - Father's death - John's father died due to old age - Family History, Death, Father
        - unknown - Family - Family Therapy Sessions - John considers family therapy sessions to address unresolved issues related to his father and brother's deaths - Family Therapy, Family History
        - unknown - Lifestyle - Occasional Social Drinking - John occasionally consumes alcohol socially, but avoids excessive drinking due to his father's history of alcoholism - Lifestyle, Substance Use, Family History
        - unknown - Lifestyle - Social Support - John has a close-knit group of friends and colleagues, but struggles to open up about his mental health issues - Social Support, Mental Health
-       - 2024-05-29 00:00:00 - Assessment - Mental Status Exam - John took a Pyschiatric Assement on 5-09-2024.
+       - 2024-05-29 00:00:00 - Assessment - Mental Status Exam - John took a Psychiatric Assessment on 5-09-2024 - Mental Health, Assessment
        - 2016-2017 - Lab Test - Dialectical Behavior Therapy (DBT) - Dialectical Behavior Therapy (DBT) for emotion regulation and distress tolerance - Therapy, DBT
-    
-    - Do not assume Event Type. They have to selected from the one of the following: "Illness", "Symptoms", "Medicine", "Lab Test", "Clinician/Expert", "Hospitalisation", "Vitals", "Assessment", "Food", "Nutrients", "Family", "Lifestyle", "Gene", "Country", "Gender", "Sex", "Sexual Preference", "Relationship Status", "Occupation", "Income", "Political Inclination", "Religion", "Education", "Family Structure", "M B T I Personality", "Physical Fitness" or "Treatment Route".
-    - Do not give out any additinal information or sentences or notes other than the Output format.
+
+# NOTE
+    - Do not assume Event Type. Select one from the following: "Illness", "Symptoms", "Medicine", "Lab Test", "Clinician/Expert", "Hospitalisation", "Vitals", "Assessment", "Food", "Nutrients", "Family", "Lifestyle", "Gene", "Country", "Gender", "Sex", "Sexual Preference", "Relationship Status", "Occupation", "Income", "Political Inclination", "Religion", "Education", "Family Structure", "M B T I Personality", "Physical Fitness", "Treatment Route".
+    - Do not include any additional information or notes other than the Output format.
 
 ## Examples for Each Event Type:
 
@@ -131,7 +132,7 @@ Create a structured and chronological patient timeline of all the clinical and i
    - 2024-03-15 14:00:00 - Clinician/Expert - Dr. Smith - Consulted with Dr. Smith for a follow-up - Clinician, Follow-up
 
 6. Hospitalisation:
-   - 2021-11-05 09:00:00 - Hospitalisation - Knee Surgery - Hospitalized for knee surgery - Surgery, Hospitalization
+   - 2021-11-05 09:00:00 - Hospitalisation - Knee Surgery - Hospitalized for knee surgery - Surgery, Hospitalisation
 
 7. Vitals:
    - 2024-02-20 08:30:00 - Vitals - Blood Pressure - Recorded blood pressure at 130/85 mmHg - Vitals, Blood Pressure
