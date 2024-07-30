@@ -34,4 +34,8 @@ Datetime - Event Type - Event Name - Event Description - Event Tags
    - 2021-04-05 - Food - Diet - Carol started a high-protein diet on 2021-04-05 - High-protein, Diet 
    - 2020-11-18 - Food - Green Diet - Dan was advised to increase his intake of leafy greens. This happened on 2020-11-18. - Green, Diet
 
+# Exlcusion List
+1. Give the output for only Event Types: "Food" or "Nutirents"
+
+
 <|eot_id|><|start_header_id|>user<|end_header_id|>
