@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 
 ALLOWLIST_PATTERN = re.compile(r"^[a-zA-Z0-9\s.,;:!?\-]+$")
 
-DEFAULT_MODEL = 'meta-llama/Meta-Llama-3-8B-Instruct'
-OPENAI_API_KEY = 'EMPTY'
-OPENAI_BASE_URL = 'https://genv2.uwc.world/v1'
+DEFAULT_MODEL = os.getenv('DEFAULT_MODEL')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')
 
 now_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
