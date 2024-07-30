@@ -5,22 +5,26 @@ import re
 import json
 import logging
 from datetime import datetime
-from dotenv import load_dotenv
+import pytz
+from langchain.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
 
 app = FastAPI()
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-load_dotenv()
-
 ALLOWLIST_PATTERN = re.compile(r"^[a-zA-Z0-9\s.,;:!?\-]+$")
 
-DEFAULT_MODEL = os.getenv('DEFAULT_MODEL')
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL')
+DEFAULT_MODEL = 'meta-llama/Meta-Llama-3-8B-Instruct'
+OPENAI_API_KEY = 'EMPTY'
+OPENAI_BASE_URL = 'https://genv2.uwc.world/v1'
 
-now_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# Format current date and time to IST
+ist_timezone = pytz.timezone("Asia/Kolkata")
+current_utc_time = datetime.now(pytz.utc)
+current_ist_time = current_utc_time.astimezone(ist_timezone)
+p_datetime = current_ist_time.strftime("%d %B %Y %I:%M %p")
 
 EVENT_TYPES = [
     "Illness", "Symptoms", "Medicine", "Lab Test", "Clinician/Expert", "Hospitalisation", "Vitals", 
@@ -74,7 +78,7 @@ def merge_timeline_chunks(chunks):
                 merged_timeline.append(event)
     return merged_timeline
 
-timeline_prompt = f"""system
+timeline_prompt = """system
 
 # Objective:
 Create a structured and chronological patient timeline of all the clinical and important life events. Focus on the patient's illness, medication, lab tests, socio-economic factors, lifestyle, family history, and treatment regime.
@@ -97,7 +101,7 @@ Create a structured and chronological patient timeline of all the clinical and i
    - Classify the event name into one of the Event Types mentioned above.
    - Add a short event description to the relevant event.
    - Use the event description to extract the event tags.
-   - Current date is {now_datetime}
+   - Current date is {p_datetime}
 
 3.*Format the Information:*
     - Example format of the output:
@@ -200,6 +204,8 @@ Create a structured and chronological patient timeline of all the clinical and i
 27. Treatment Route:
     - 2023-09-10 14:30:00 - Treatment Route - Oral Medication - Prescribed oral medication for hypertension - Medicine, Treatment
 
+user
+{input}
 assistant
 """
 
@@ -216,31 +222,43 @@ async def timeline(data: InputData):
     """Endpoint to process data based on the specified pattern."""
     input_data = data.input
     urls = pattern_path_mappings["timeline"]
-    system_url, user_url = urls["system_url"], urls["user_url"]
 
     chunks = chunk_text(input_data, chunk_size=200, overlap=50)
+
     all_responses = []
     try:
         for chunk in chunks:
-            messages = create_messages(system_url, user_url, chunk)
-            response = requests.post(
-                f"{OPENAI_BASE_URL}/chat/completions",
-                json={
-                    "model": DEFAULT_MODEL,
-                    "messages": messages,
-                    "temperature": 0.0,
-                    "top_p": 1,
-                    "frequency_penalty": 0.1,
-                    "presence_penalty": 0.1,
-                },
-                headers={"Authorization": f"Bearer {OPENAI_API_KEY}"}
+
+            tl_prompt = PromptTemplate(
+            template=timeline_prompt, input_variables=["input"], partial_variables={"p_datetime": p_datetime}
             )
-            response.raise_for_status()
-            assistant_message = response.json()["choices"][0]["message"]["content"]
-            all_responses.append(parse_timeline(assistant_message))
+
+            # tl_prompt.format(input=chunk, time=p_datetime)
+
+
+            llm = ChatOpenAI(
+                model=DEFAULT_MODEL,
+                temperature=0,
+                max_tokens=5000,
+                max_retries=2,
+                api_key=OPENAI_API_KEY,  
+                base_url=OPENAI_BASE_URL
+            )    
+
+            # messages = create_messages(system_url, user_url, chunk)
+
+            chain = tl_prompt | llm
+            response = chain.invoke({"input": chunk})
+
+            logger.debug("response variable in loop: %s", response)
+            response_content = response.content
+
+            all_responses.append(parse_timeline(response_content))
+
+        combined_response_content = '\n'.join([str(response) for response in all_responses])
 
         with open("assistant_message.txt", "w") as file:
-            file.write(assistant_message)
+            file.write(combined_response_content)
 
         timeline_data = merge_timeline_chunks(all_responses)
         return {"timeline_data": timeline_data}
