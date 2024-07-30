@@ -33,4 +33,7 @@ Create a structured patient timeline by extracting entities and relationships on
     - 2021-08-25 - Family - Brother's accident - her brother had died in a car accident when he was 18, which had a significant impact on her mental health - sibling, car accident, death
     - 2023-03-15 - Family - Mother Alzheimer's disease - Anna's mother, Ella was diagnosed with Alzheimer's disease. - mother, Alzheimer's disease
 
+# Exlcusion List
+1. Give the output for only Event Types: "Family", "Lifestyle", "Gene", "Country", "Gender", "Sex", "Sexual Preference" or "Relationship Status"
+
 <|eot_id|><|start_header_id|>user<|end_header_id|>
